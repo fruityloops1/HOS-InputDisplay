@@ -24,8 +24,6 @@
 
 #include "server.hpp"
 
-using namespace std;
-
 int setupServerSocket() {
     auto server_sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -44,7 +42,7 @@ int setupServerSocket() {
     return server_sock;
 }
 
-string buildJSONPayload(u64 keys, HidAnalogStickState lPos, HidAnalogStickState rPos) {
+std::string buildJSONPayload(u64 keys, HidAnalogStickState lPos, HidAnalogStickState rPos) {
     auto root = json_object();
     auto axes = json_array();
     auto buttons = json_array();
@@ -71,12 +69,12 @@ string buildJSONPayload(u64 keys, HidAnalogStickState lPos, HidAnalogStickState 
     }
 
     auto json = json_dumps(root, JSON_COMPACT);
-    auto result = string(json);
+    auto result = std::string(json);
 
     free(json);
     json_decref(root);
 
-    result.insert(0, to_string(result.size()) + "#");
+    result.insert(0, std::to_string(result.size()) + "#");
 
     return result;
 }

@@ -67,6 +67,9 @@ extern "C" {
             .udp_rx_buf_size = 0xA500,
 
             .sb_efficiency = 2,
+
+            .num_bsd_sessions = 3,
+            .bsd_service_type = BsdServiceType_User,
         };
 
         rc = socketInitialize(&socketInitConfig);
