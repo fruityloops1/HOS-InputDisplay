@@ -126,6 +126,6 @@ int main(int argc, char * argv[]) {
         close(client_sock);
     }
     close(server_sock);
-    delete buffer;
+    delete[] buffer;
     return 0;
 }
