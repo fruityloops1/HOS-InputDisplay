@@ -8,18 +8,17 @@ VERS="${TAGY:1}"
 OUT="./out/atmosphere/contents/0100000000000901"
 mkdir  -p  $OUT/flags/
 
-export DOCKER_BUILDKIT=1
-docker  build  .  -t ojds-nx-build
 docker  run  --rm         \
+  --pull=always           \
   -u $(id -u):$(id -g)    \
   -v "/$PWD/":/OJDS-NX/   \
   -w /OJDS-NX/            \
   -e APP_TITLE="$PROJ"    \
   -e APP_AUTHOR="$AUTH"   \
   -e APP_VERSION="$VERS"  \
-  ojds-nx-build           \
+  devkitpro/devkita64     \
+  make                    \
 ;
-docker  rmi  ojds-nx-build
 
 echo  '.'                 >$OUT/flags/boot2.flag
 cp  ./source/toolbox.json  $OUT/toolbox.json
