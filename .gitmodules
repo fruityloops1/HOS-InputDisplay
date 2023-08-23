@@ -1,0 +1,6 @@
+[submodule "client/Lib/raylib"]
+	path = client/Lib/raylib
+	url = https://github.com/raysan5/raylib
+[submodule "client/Lib/inih"]
+	path = client/Lib/inih
+	url = https://github.com/benhoyt/inih

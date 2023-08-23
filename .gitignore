@@ -1,6 +1,8 @@
 build/
 out/
+.cache/
 *.elf
 *.npdm
 *.nso
 *.nsp
+compile_commands.json

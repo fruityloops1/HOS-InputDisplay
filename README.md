@@ -1,24 +1,16 @@
-# Open Joystick Display Server NX
+# HOS-InputDisplay
 
-This is a very simple system module that listens for Open Joystick Display to request controller inputs, and then send back the controller inputs to be displayed. To install simply put the contents of the zip file in the root of your SD card. Thanks to Jakibaki for most of the code in this and for the help on Discord. For more information on Open Joystick Display: [Click Here](https://ojdproject.com/)
+Nintendo switch input display meant as a replacement for OJDS-NX, because OJDS-NX causes load times to increase in some games. This can still be the case with this input display, but it is minimal.
 
-# Mappings
+## Build (Sysmodule)
+Use devkitPro and make to build
 
-| Button | Index |
-|--------|-------|
-| A      | 0     |
-| B      | 1     |
-| X      | 2     |
-| Y      | 3     |
-| L3     | 4     |
-| R3     | 5     |
-| L      | 6     |
-| R      | 7     |
-| L2     | 8     |
-| R2     | 9     |
-| PLUS   | 10    |
-| MINUS  | 11    |
-| LEFT   | 12    |
-| UP     | 13    |
-| RIGHT  | 14    |
-| DOWN   | 15    |
+## Build (Display)
+Build with CMake, use MSys2 on Windows
+
+## Installation
+Place the .nsp in /atmosphere/contents/0100000000000901/exefs.nsp, the toolbox.json in /atmosphere/contents/0100000000000901/toolbox.json, and create /atmosphere/0100000000000901/flags/boot2.flag
+
+# Usage
+Put your switch IP in config.ini, and run the display program (make sure the sysmodule is running on your switch).
+Press L + ZL + ZR + R + Plus to restart the input server.
