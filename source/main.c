@@ -110,6 +110,8 @@ restartSocket :
     HidAnalogStickState rPos;
   } packetData;
 
+  typeof(packetData) lastData;
+
   struct {
     int packetsPerSecond;
   } settings;
@@ -117,9 +119,11 @@ restartSocket :
 
   unsigned char buffer[32] = {0};
 
+  bool hasSentZero = false;
   while (true) {
     svcSleepThread(1000000000 / settings.packetsPerSecond);
 
+    lastData = packetData;
     padUpdate(&pad);
     packetData.keys = padGetButtons(&pad);
     packetData.lPos = padGetStickPos(&pad, 0);
@@ -147,8 +151,15 @@ restartSocket :
         break;
       }
 
-    sendto(sockfd, &packetData, sizeof(packetData), 0,
-           (const struct sockaddr *)&cliaddr, len);
+    if (packetData.keys == lastData.keys &&
+        packetData.lPos.x == lastData.lPos.x &&
+        packetData.lPos.y == lastData.lPos.y &&
+        packetData.rPos.x == lastData.rPos.x &&
+        packetData.rPos.y == lastData.rPos.y) {
+    } else {
+      sendto(sockfd, &packetData, sizeof(packetData), 0,
+             (const struct sockaddr *)&cliaddr, len);
+    }
   }
 
   // Your code / main loop goes here.
