@@ -103,6 +103,7 @@ int main() {
   cubePos.y = 0;
   cubePos.z = 0;
 
+  Quaternion slerpTo;
   Quaternion baseRotation;
   baseRotation.x = 0;
   baseRotation.y = 0;
@@ -124,14 +125,20 @@ int main() {
     quat.z *= -1;
     cube.transform = QuaternionToMatrix(
         QuaternionMultiply(QuaternionInvert(baseRotation), quat));
-    if (cooldown > 0)
+    if (cooldown > 0) {
       cooldown--;
+
+      baseRotation =
+          QuaternionSlerp(baseRotation, slerpTo,
+                          ((float)cfg.packetsPerSecond / 2 - (float)cooldown) /
+                              (float)cfg.packetsPerSecond / 2);
+    }
     if (getPacketData()->keys & HidNpadButton_StickL && cooldown <= 0) {
-      baseRotation = toQuaternion(getPacketData()->state.direction.direction);
-      baseRotation.x *= -1;
-      baseRotation.y *= -1;
-      baseRotation.z *= -1;
-      cooldown = 60;
+      cooldown = cfg.packetsPerSecond / 2;
+      slerpTo = toQuaternion(getPacketData()->state.direction.direction);
+      slerpTo.x *= -1;
+      slerpTo.y *= -1;
+      slerpTo.z *= -1;
     }
     DrawModel(cube, cubePos, 2, WHITE);
     EndMode3D();
@@ -259,6 +266,29 @@ int main() {
     rec.height = 20 * 2;
     rec.width = 15 * 2;
     DrawRectangleRounded(rec, 0, 8, *(Color *)&cfg.colInactive);
+
+    if (cooldown > 0) {
+      pos.x = 180;
+      pos.y = 10;
+      DrawTextEx(buttonFont, "Recalibrating", pos, 38, 4, WHITE);
+    }
+
+    if (quat.x > 0)
+      DrawRectangle(50, 310, quat.x * 40, 5, WHITE);
+    else
+      DrawRectangle(50 + quat.x * 40, 310, -quat.x * 40, 5, WHITE);
+    if (quat.y > 0)
+      DrawRectangle(50, 320, quat.y * 40, 5, WHITE);
+    else
+      DrawRectangle(50 + quat.y * 40, 320, -quat.y * 40, 5, WHITE);
+    if (quat.z > 0)
+      DrawRectangle(50, 330, quat.z * 40, 5, WHITE);
+    else
+      DrawRectangle(50 + quat.z * 40, 330, -quat.z * 40, 5, WHITE);
+    if (quat.w > 0)
+      DrawRectangle(50, 340, quat.w * 40, 5, WHITE);
+    else
+      DrawRectangle(50 + quat.w * 40, 340, -quat.w * 40, 5, WHITE);
 
     EndDrawing();
   }
