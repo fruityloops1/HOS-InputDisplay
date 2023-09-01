@@ -35,6 +35,8 @@ static int handler(void *user, const char *section, const char *name,
     pconfig->host = strdup(value);
   } else if (MATCH("config", "fontPath")) {
     pconfig->fontPath = strdup(value);
+  } else if (MATCH("config", "fatFontPath")) {
+    pconfig->fatFontPath = strdup(value);
   } else if (MATCH("colors", "inactive")) {
     pconfig->colInactive = colorFromStr(value);
   } else if (MATCH("colors", "active")) {

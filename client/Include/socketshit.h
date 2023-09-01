@@ -46,5 +46,6 @@ void initSocketShit(config cfg);
 void updateSocketShit();
 void exitSocketShit();
 PacketData* getPacketData();
+PacketData* getLastPacketData();
 
 #endif

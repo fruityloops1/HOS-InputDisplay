@@ -52,9 +52,12 @@ void initSocketShit(config cfg) {
 }
 
 PacketData packetData;
+PacketData lastPacketData;
 PacketData *getPacketData() { return &packetData; }
+PacketData *getLastPacketData() { return &lastPacketData; }
 
 void updateSocketShit() {
+  lastPacketData = packetData;
   recvfrom(sockfd, (char *)&packetData, sizeof(packetData), MSG_WAITALL,
            (struct sockaddr *)&servaddr, &len);
 }

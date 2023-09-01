@@ -13,6 +13,21 @@
 
 config cfg;
 Font buttonFont;
+Font fatFont;
+int global = 0;
+
+int countDigits(int value) {
+  if (value < 0)
+    value = -value;
+
+  int count = 0;
+  do {
+    count++;
+    value /= 10;
+  } while (value != 0);
+
+  return count;
+}
 
 void drawStick(Vector2 pos, HidAnalogStickState stick, HidNpadButton button) {
   Vector2 at;
@@ -22,6 +37,11 @@ void drawStick(Vector2 pos, HidAnalogStickState stick, HidNpadButton button) {
   DrawCircleV(at, 40,
               getPacketData()->keys & button ? *(Color *)&cfg.colActive
                                              : *(Color *)&cfg.colStick);
+  char buf[64];
+  snprintf(buf, sizeof(buf), "%d", global);
+  at.x -= countDigits(global) * 3;
+  at.y -= 7;
+  DrawTextEx(fatFont, buf, at, 9, 2, WHITE);
 }
 
 Quaternion toQuaternion(float m[3][3]) {
@@ -76,6 +96,16 @@ void drawButton(Vector2 pos, float width, float height, HidNpadButton button,
   DrawTextEx(buttonFont, label, pos, fontSize, 4, *(Color *)&cfg.colFont);
 }
 
+uint32_t balls_hash(uint32_t value) {
+  value += 0x7ed55d16 + (value << 12);
+  value ^= 0xc761c23c ^ (value >> 19);
+  value += 0x165667b1 + (value << 5);
+  value += 0xd3a2646c ^ (value << 9);
+  value += 0xfd7046c5 + (value << 3);
+  value ^= 0xb55a4f09 ^ (value >> 16);
+  return value;
+}
+
 int main() {
   cfg = loadConfig();
   initSocketShit(cfg);
@@ -83,6 +113,7 @@ int main() {
   SetConfigFlags(FLAG_MSAA_4X_HINT);
 
   buttonFont = LoadFontEx(cfg.fontPath, 38, 0, 250);
+  fatFont = LoadFontEx(cfg.fatFontPath, 38, 0, 250);
 
   Camera3D camera = {0};
   camera.projection = CAMERA_PERSPECTIVE;
@@ -273,24 +304,9 @@ int main() {
       DrawTextEx(buttonFont, "Recalibrating", pos, 38, 4, WHITE);
     }
 
-    if (quat.x > 0)
-      DrawRectangle(50, 310, quat.x * 40, 5, WHITE);
-    else
-      DrawRectangle(50 + quat.x * 40, 310, -quat.x * 40, 5, WHITE);
-    if (quat.y > 0)
-      DrawRectangle(50, 320, quat.y * 40, 5, WHITE);
-    else
-      DrawRectangle(50 + quat.y * 40, 320, -quat.y * 40, 5, WHITE);
-    if (quat.z > 0)
-      DrawRectangle(50, 330, quat.z * 40, 5, WHITE);
-    else
-      DrawRectangle(50 + quat.z * 40, 330, -quat.z * 40, 5, WHITE);
-    if (quat.w > 0)
-      DrawRectangle(50, 340, quat.w * 40, 5, WHITE);
-    else
-      DrawRectangle(50 + quat.w * 40, 340, -quat.w * 40, 5, WHITE);
-
     EndDrawing();
+
+    global++;
   }
 
   free((void *)cfg.host);

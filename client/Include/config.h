@@ -12,6 +12,7 @@ typedef struct {
     int packetsPerSecond;
     const char* host;
     const char* fontPath;
+    const char* fatFontPath;
     CColor colInactive;
     CColor colActive;
     CColor colStick;
