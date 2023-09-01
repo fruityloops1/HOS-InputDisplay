@@ -89,7 +89,7 @@ int main() {
   camera.fovy = 45;
   camera.target.x = 0;
   camera.target.y = 0;
-  camera.target.z = 0;
+  camera.target.z = -6;
   camera.up.x = 0;
   camera.up.y = 1;
   camera.up.z = 0;
@@ -140,63 +140,111 @@ int main() {
     pos.x = 100;
     pos.y = 180;
     drawStick(pos, getPacketData()->lPos, HidNpadButton_StickL);
+    cube.materials[11].maps->color =
+        getPacketData()->keys & HidNpadButton_StickL ? *(Color *)&cfg.colActive
+                                                     : *(Color *)&cfg.colStick;
 
     pos.x = 380;
     pos.y = 270;
     drawStick(pos, getPacketData()->rPos, HidNpadButton_StickR);
+    cube.materials[12].maps->color =
+        getPacketData()->keys & HidNpadButton_StickR ? *(Color *)&cfg.colActive
+                                                     : *(Color *)&cfg.colStick;
 
     pos.x = 550;
     pos.y = 180;
     drawButton(pos, 25, 25, HidNpadButton_A, "A", 1, -12, -19, 38);
+    cube.materials[0].maps->color = getPacketData()->keys & HidNpadButton_A
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
 
     pos.x = 450;
     pos.y = 180;
     drawButton(pos, 25, 25, HidNpadButton_Y, "Y", 1, -12, -19, 38);
+    cube.materials[14].maps->color = getPacketData()->keys & HidNpadButton_Y
+                                         ? *(Color *)&cfg.colActive
+                                         : *(Color *)&cfg.colInactive;
 
     pos.x = 500;
     pos.y = 230;
     drawButton(pos, 25, 25, HidNpadButton_B, "B", 1, -12, -19, 38);
+    cube.materials[1].maps->color = getPacketData()->keys & HidNpadButton_B
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
 
     pos.x = 500;
     pos.y = 130;
     drawButton(pos, 25, 25, HidNpadButton_X, "X", 1, -12, -19, 38);
+    cube.materials[13].maps->color = getPacketData()->keys & HidNpadButton_X
+                                         ? *(Color *)&cfg.colActive
+                                         : *(Color *)&cfg.colInactive;
 
     pos.x = 380;
     pos.y = 130;
     drawButton(pos, 12, 12, HidNpadButton_Plus, "+", 1, -9, -19, 38);
+    cube.materials[9].maps->color = getPacketData()->keys & HidNpadButton_Plus
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
 
     pos.x = 220;
     pos.y = 130;
     drawButton(pos, 12, 12, HidNpadButton_Minus, "-", 1, -7, -21, 38);
+    cube.materials[8].maps->color = getPacketData()->keys & HidNpadButton_Minus
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
 
     pos.x = 500;
     pos.y = 70;
     drawButton(pos, 40, 15, HidNpadButton_R, "R", 1, -12, -20, 38);
+    cube.materials[10].maps->color = getPacketData()->keys & HidNpadButton_R
+                                         ? *(Color *)&cfg.colActive
+                                         : *(Color *)&cfg.colInactive;
 
     pos.x = 500;
     pos.y = 30;
     drawButton(pos, 40, 15, HidNpadButton_ZR, "ZR", 1, -22, -19, 38);
+    cube.materials[16].maps->color = getPacketData()->keys & HidNpadButton_ZR
+                                         ? *(Color *)&cfg.colActive
+                                         : *(Color *)&cfg.colInactive;
 
     pos.x = 100;
     pos.y = 70;
     drawButton(pos, 40, 15, HidNpadButton_L, "L", 1, -12, -20, 38);
+    cube.materials[7].maps->color = getPacketData()->keys & HidNpadButton_L
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
 
     pos.x = 100;
     pos.y = 30;
     drawButton(pos, 40, 15, HidNpadButton_ZL, "ZL", 1, -22, -19, 38);
+    cube.materials[15].maps->color = getPacketData()->keys & HidNpadButton_ZL
+                                         ? *(Color *)&cfg.colActive
+                                         : *(Color *)&cfg.colInactive;
 
     pos.x = 220;
     pos.y = 240;
     drawButton(pos, 15, 15, HidNpadButton_Up, "", .5, 0, 0, 38);
+    cube.materials[6].maps->color = getPacketData()->keys & HidNpadButton_Up
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
     pos.x = 220;
     pos.y = 300;
     drawButton(pos, 15, 15, HidNpadButton_Down, "", .5, 0, 0, 38);
+    cube.materials[3].maps->color = getPacketData()->keys & HidNpadButton_Down
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
     pos.x = 190;
     pos.y = 270;
     drawButton(pos, 15, 15, HidNpadButton_Left, "", .5, 0, 0, 38);
+    cube.materials[4].maps->color = getPacketData()->keys & HidNpadButton_Left
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
     pos.x = 250;
     pos.y = 270;
     drawButton(pos, 15, 15, HidNpadButton_Right, "", .5, 0, 0, 38);
+    cube.materials[5].maps->color = getPacketData()->keys & HidNpadButton_Right
+                                        ? *(Color *)&cfg.colActive
+                                        : *(Color *)&cfg.colInactive;
 
     pos.x = 220;
     pos.y = 270;
