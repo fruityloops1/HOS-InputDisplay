@@ -1,7 +1,9 @@
 #include "config.h"
 #include "hid.h"
 #include "raylib.h"
+#include "raymath.h"
 #include "socketshit.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,6 +22,41 @@ void drawStick(Vector2 pos, HidAnalogStickState stick, HidNpadButton button) {
   DrawCircleV(at, 40,
               getPacketData()->keys & button ? *(Color *)&cfg.colActive
                                              : *(Color *)&cfg.colStick);
+}
+
+Quaternion toQuaternion(float m[3][3]) {
+  Quaternion q;
+
+  float trace = m[0][0] + m[1][1] + m[2][2];
+  if (trace > 0) {
+    float s = 0.5f / sqrtf(trace + 1.0f);
+    q.w = 0.25f / s;
+    q.x = (m[2][1] - m[1][2]) * s;
+    q.y = (m[0][2] - m[2][0]) * s;
+    q.z = (m[1][0] - m[0][1]) * s;
+  } else {
+    if (m[0][0] > m[1][1] && m[0][0] > m[2][2]) {
+      float s = 2.0f * sqrtf(1.0f + m[0][0] - m[1][1] - m[2][2]);
+      q.w = (m[2][1] - m[1][2]) / s;
+      q.x = 0.25f * s;
+      q.y = (m[0][1] + m[1][0]) / s;
+      q.z = (m[0][2] + m[2][0]) / s;
+    } else if (m[1][1] > m[2][2]) {
+      float s = 2.0f * sqrtf(1.0f + m[1][1] - m[0][0] - m[2][2]);
+      q.w = (m[0][2] - m[2][0]) / s;
+      q.x = (m[0][1] + m[1][0]) / s;
+      q.y = 0.25f * s;
+      q.z = (m[1][2] + m[2][1]) / s;
+    } else {
+      float s = 2.0f * sqrtf(1.0f + m[2][2] - m[0][0] - m[1][1]);
+      q.w = (m[1][0] - m[0][1]) / s;
+      q.x = (m[0][2] + m[2][0]) / s;
+      q.y = (m[1][2] + m[2][1]) / s;
+      q.z = 0.25f * s;
+    }
+  }
+
+  return q;
 }
 
 void drawButton(Vector2 pos, float width, float height, HidNpadButton button,
@@ -47,16 +84,57 @@ int main() {
 
   buttonFont = LoadFontEx(cfg.fontPath, 38, 0, 250);
 
+  Camera3D camera = {0};
+  camera.projection = CAMERA_PERSPECTIVE;
+  camera.fovy = 45;
+  camera.target.x = 0;
+  camera.target.y = 0;
+  camera.target.z = 0;
+  camera.up.x = 0;
+  camera.up.y = 1;
+  camera.up.z = 0;
+  camera.position.x = 0;
+  camera.position.y = -15;
+  camera.position.z = 15;
+  Model cube = LoadModel("Res/Vallarta_Christopher_HW2_Controller.obj");
+
+  Vector3 cubePos;
+  cubePos.x = 0;
+  cubePos.y = 0;
+  cubePos.z = 0;
+
+  Quaternion baseRotation;
+  baseRotation.x = 0;
+  baseRotation.y = 0;
+  baseRotation.z = 0;
+  baseRotation.w = 1;
+  int cooldown = -1;
+
   while (1) {
     updateSocketShit();
 
-    // printf("%zu %d %d %d %d\n", getPacketData()->keys,
-    // getPacketData()->lPos.x,
-    //        getPacketData()->lPos.y, getPacketData()->rPos.x,
-    //        getPacketData()->rPos.y);
     BeginDrawing();
+    BeginMode3D(camera);
 
     ClearBackground(*(Color *)&cfg.colBg);
+
+    Quaternion quat = toQuaternion(getPacketData()->state.direction.direction);
+    quat.x *= -1;
+    quat.y *= -1;
+    quat.z *= -1;
+    cube.transform = QuaternionToMatrix(
+        QuaternionMultiply(QuaternionInvert(baseRotation), quat));
+    if (cooldown > 0)
+      cooldown--;
+    if (getPacketData()->keys & HidNpadButton_StickL && cooldown <= 0) {
+      baseRotation = toQuaternion(getPacketData()->state.direction.direction);
+      baseRotation.x *= -1;
+      baseRotation.y *= -1;
+      baseRotation.z *= -1;
+      cooldown = 60;
+    }
+    DrawModel(cube, cubePos, 2, WHITE);
+    EndMode3D();
 
     Vector2 pos;
     pos.x = 100;

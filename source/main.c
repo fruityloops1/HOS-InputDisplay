@@ -108,9 +108,15 @@ restartSocket :
     u64 keys;
     HidAnalogStickState lPos;
     HidAnalogStickState rPos;
+    HidSixAxisSensorState state;
   } packetData;
 
   typeof(packetData) lastData;
+
+  HidSixAxisSensorHandle handle;
+  hidGetSixAxisSensorHandles(&handle, 1, HidNpadIdType_No1,
+                             HidNpadStyleTag_NpadFullKey);
+  hidStartSixAxisSensor(handle);
 
   struct {
     int packetsPerSecond;
@@ -119,7 +125,6 @@ restartSocket :
 
   unsigned char buffer[32] = {0};
 
-  bool hasSentZero = false;
   while (true) {
     svcSleepThread(1000000000 / settings.packetsPerSecond);
 
@@ -128,6 +133,7 @@ restartSocket :
     packetData.keys = padGetButtons(&pad);
     packetData.lPos = padGetStickPos(&pad, 0);
     packetData.rPos = padGetStickPos(&pad, 1);
+    hidGetSixAxisSensorStates(handle, &packetData.state, 1);
 
     u64 k = packetData.keys;
     if (k & HidNpadButton_L && k & HidNpadButton_ZL && k & HidNpadButton_R &&
@@ -151,15 +157,15 @@ restartSocket :
         break;
       }
 
-    if (packetData.keys == lastData.keys &&
-        packetData.lPos.x == lastData.lPos.x &&
-        packetData.lPos.y == lastData.lPos.y &&
-        packetData.rPos.x == lastData.rPos.x &&
-        packetData.rPos.y == lastData.rPos.y) {
-    } else {
-      sendto(sockfd, &packetData, sizeof(packetData), 0,
-             (const struct sockaddr *)&cliaddr, len);
-    }
+    sendto(sockfd, &packetData, sizeof(packetData), 0,
+           (const struct sockaddr *)&cliaddr, len);
+    // if (packetData.keys == lastData.keys &&
+    //     packetData.lPos.x == lastData.lPos.x &&
+    //     packetData.lPos.y == lastData.lPos.y &&
+    //     packetData.rPos.x == lastData.rPos.x &&
+    //     packetData.rPos.y == lastData.rPos.y) {
+    // } else {
+    // }
   }
 
   // Your code / main loop goes here.
