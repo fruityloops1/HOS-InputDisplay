@@ -96,16 +96,6 @@ void drawButton(Vector2 pos, float width, float height, HidNpadButton button,
   DrawTextEx(buttonFont, label, pos, fontSize, 4, *(Color *)&cfg.colFont);
 }
 
-uint32_t balls_hash(uint32_t value) {
-  value += 0x7ed55d16 + (value << 12);
-  value ^= 0xc761c23c ^ (value >> 19);
-  value += 0x165667b1 + (value << 5);
-  value += 0xd3a2646c ^ (value << 9);
-  value += 0xfd7046c5 + (value << 3);
-  value ^= 0xb55a4f09 ^ (value >> 16);
-  return value;
-}
-
 int main() {
   cfg = loadConfig();
   initSocketShit(cfg);

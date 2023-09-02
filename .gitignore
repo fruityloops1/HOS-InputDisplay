@@ -1,5 +1,7 @@
 build/
 Build/
+bin/
+obj/
 out/
 .cache/
 *.elf
