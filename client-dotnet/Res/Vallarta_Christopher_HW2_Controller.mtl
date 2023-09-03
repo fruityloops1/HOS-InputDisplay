@@ -1,6 +1,6 @@
 newmtl Vallarta_Christopher_HW2_Controller:A
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.08 0.30 0.36
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -8,7 +8,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:B
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.08 0.12 0.13
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -16,7 +16,15 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:Base
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.00 0.00 0.00
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.45
+Ks 0.50 0.50 0.50
+Ns 324.00
+newmtl Vallarta_Christopher_HW2_Controller:BaseDPadSG
+illum 4
+Kd 1.00 0.00 0.59
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -24,7 +32,7 @@ Ks 0.50 0.50 0.50
 Ns 324.00
 newmtl Vallarta_Christopher_HW2_Controller:DDown
 illum 4
-Kd 0.80 0.80 0.80
+Kd 1.00 0.36 0.00
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -32,7 +40,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:DLeft
 illum 4
-Kd 0.80 0.80 0.80
+Kd 1.00 0.13 0.00
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -40,7 +48,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:DRight
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.00 0.82 1.00
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -48,7 +56,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:DUp
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.10 0.00 1.00
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -56,7 +64,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:L
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.08 0.08 0.08
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -64,7 +72,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:Minus
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.38 0.23 0.05
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -72,7 +80,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:Plus
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.19 0.19 0.19
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -80,7 +88,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:R
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.38 0.02 0.05
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -88,7 +96,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:StickL
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.00 0.36 0.13
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -96,7 +104,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:StickR
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.17 0.09 0.02
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -104,7 +112,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:X
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.39 1.00 0.89
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -112,7 +120,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:Y
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.76 0.23 0.13
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -120,7 +128,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:ZL
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.22 0.03 0.00
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45
@@ -128,7 +136,7 @@ Ks 0.50 0.50 0.50
 Ns 250.00
 newmtl Vallarta_Christopher_HW2_Controller:ZR
 illum 4
-Kd 0.80 0.80 0.80
+Kd 0.03 0.21 0.00
 Ka 1.00 1.00 1.00
 Tf 1.00 1.00 1.00
 Ni 1.45

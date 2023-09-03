@@ -31,6 +31,7 @@ class Config
         StickColor = HexToColor(data["colors"]["stick"]);
         FontColor = HexToColor(data["colors"]["font"]);
         BackgroundColor = HexToColor(data["colors"]["background"]);
+        ControllerColor = HexToColor(data["colors"]["controller"]);
     }
 
     public int PacketsPerSecond;
@@ -42,4 +43,5 @@ class Config
     public Color StickColor;
     public Color FontColor;
     public Color BackgroundColor;
+    public Color ControllerColor;
 }
