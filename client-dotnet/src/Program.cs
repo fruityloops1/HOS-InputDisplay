@@ -54,7 +54,7 @@ class Program
         camera.up = new Vector3(0, 1, 0);
         camera.fovy = 45;
         camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
-        controllerModel = Raylib.LoadModel("Res/Vallarta_Christopher_HW2_Controller.obj");
+        controllerModel = Raylib.LoadModel("Res/Controller.glb");
 
         UdpClient client = new UdpClient(config.Host, 44302);
         IPEndPoint remote = null;
@@ -72,7 +72,7 @@ class Program
         unsafe
         {
             controllerModel.materials[2].maps[0].color = config.ControllerColor;
-            controllerModel.materials[3].maps[0].color = config.InactiveColor;
+            controllerModel.materials[7].maps[0].color = config.InactiveColor;
         }
 
         while (true)
@@ -117,23 +117,23 @@ class Program
 
             Raylib.EndMode3D();
 
-            DrawStick(new Vector2(100, 180), LeftStick, HidNpadButton.StickL, 12);
-            DrawStick(new Vector2(380, 270), RightStick, HidNpadButton.StickR, 13);
+            DrawStick(new Vector2(100, 180), LeftStick, HidNpadButton.StickL, 8);
+            DrawStick(new Vector2(380, 270), RightStick, HidNpadButton.StickR, 9);
 
-            DrawButton(new Vector2(550, 180), 25, 25, HidNpadButton.A, "A", 1, -12, -19, 38, 0);
-            DrawButton(new Vector2(450, 180), 25, 25, HidNpadButton.Y, "Y", 1, -12, -19, 38, 15);
-            DrawButton(new Vector2(500, 230), 25, 25, HidNpadButton.B, "B", 1, -12, -19, 38, 1);
-            DrawButton(new Vector2(500, 130), 25, 25, HidNpadButton.X, "X", 1, -12, -19, 38, 14);
-            DrawButton(new Vector2(380, 130), 12, 12, HidNpadButton.Plus, "+", 1, -9, -19, 38, 10);
-            DrawButton(new Vector2(220, 130), 12, 12, HidNpadButton.Minus, "-", 1, -7, -21, 38, 9);
-            DrawButton(new Vector2(500, 70), 40, 15, HidNpadButton.R, "R", 1, -12, -20, 38, 11);
-            DrawButton(new Vector2(500, 30), 40, 15, HidNpadButton.ZR, "ZR", 1, -22, -19, 38, 17);
-            DrawButton(new Vector2(100, 70), 40, 15, HidNpadButton.L, "L", 1, -12, -20, 38, 8);
-            DrawButton(new Vector2(100, 30), 40, 15, HidNpadButton.ZL, "ZL", 1, -22, -19, 38, 16);
-            DrawButton(new Vector2(220, 240), 15, 15, HidNpadButton.Up, "", 0.5f, 0, 0, 38, 7);
-            DrawButton(new Vector2(220, 300), 15, 15, HidNpadButton.Down, "", 0.5f, 0, 0, 38, 4);
-            DrawButton(new Vector2(190, 270), 15, 15, HidNpadButton.Left, "", 0.5f, 0, 0, 38, 5);
-            DrawButton(new Vector2(250, 270), 15, 15, HidNpadButton.Right, "", 0.5f, 0, 0, 38, 6);
+            DrawButton(new Vector2(550, 180), 25, 25, HidNpadButton.A, "A", 1, -12, -19, 38, 10);
+            DrawButton(new Vector2(450, 180), 25, 25, HidNpadButton.Y, "Y", 1, -12, -19, 38, 13);
+            DrawButton(new Vector2(500, 230), 25, 25, HidNpadButton.B, "B", 1, -12, -19, 38, 12);
+            DrawButton(new Vector2(500, 130), 25, 25, HidNpadButton.X, "X", 1, -12, -19, 38, 11);
+            DrawButton(new Vector2(380, 130), 12, 12, HidNpadButton.Plus, "+", 1, -9, -19, 38, 14);
+            DrawButton(new Vector2(220, 130), 12, 12, HidNpadButton.Minus, "-", 1, -7, -21, 38, 15);
+            DrawButton(new Vector2(500, 70), 40, 15, HidNpadButton.R, "R", 1, -12, -20, 38, 18);
+            DrawButton(new Vector2(500, 30), 40, 15, HidNpadButton.ZR, "ZR", 1, -22, -19, 38, 16);
+            DrawButton(new Vector2(100, 70), 40, 15, HidNpadButton.L, "L", 1, -12, -20, 38, 17);
+            DrawButton(new Vector2(100, 30), 40, 15, HidNpadButton.ZL, "ZL", 1, -22, -19, 38, 1);
+            DrawButton(new Vector2(220, 240), 15, 15, HidNpadButton.Up, "", 0.5f, 0, 0, 38, 3);
+            DrawButton(new Vector2(220, 300), 15, 15, HidNpadButton.Down, "", 0.5f, 0, 0, 38, 5);
+            DrawButton(new Vector2(190, 270), 15, 15, HidNpadButton.Left, "", 0.5f, 0, 0, 38, 6);
+            DrawButton(new Vector2(250, 270), 15, 15, HidNpadButton.Right, "", 0.5f, 0, 0, 38, 4);
             Raylib.DrawRectangleRounded(new Rectangle(205, 250, 15 * 2, 20 * 2), 0, 8, config.InactiveColor);
             Raylib.DrawRectangleRounded(new Rectangle(200, 255, 20 * 2, 15 * 2), 0, 8, config.InactiveColor);
 
