@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 
   padConfigureInput(1, HidNpadStyleSet_NpadStandard);
   PadState pad;
-  padInitializeDefault(&pad);
+  padInitializeAny(&pad);
 restartSocket :
 
 {}
@@ -115,10 +115,15 @@ restartSocket :
 
   typeof(packetData) lastData;
 
-  HidSixAxisSensorHandle handle;
-  hidGetSixAxisSensorHandles(&handle, 1, HidNpadIdType_No1,
+  HidSixAxisSensorHandle handleFullKey;
+  HidSixAxisSensorHandle handleJoyDual[2];
+  hidGetSixAxisSensorHandles(&handleFullKey, 1, HidNpadIdType_No1,
                              HidNpadStyleTag_NpadFullKey);
-  hidStartSixAxisSensor(handle);
+  hidGetSixAxisSensorHandles(handleJoyDual, 2, HidNpadIdType_No1,
+                             HidNpadStyleTag_NpadJoyDual);
+  hidStartSixAxisSensor(handleFullKey);
+  hidStartSixAxisSensor(handleJoyDual[0]);
+  hidStartSixAxisSensor(handleJoyDual[1]);
 
   struct {
     int packetsPerSecond;
@@ -136,14 +141,17 @@ restartSocket :
     packetData.lPos = padGetStickPos(&pad, 0);
     packetData.rPos = padGetStickPos(&pad, 1);
     packetData.style = hidGetNpadStyleSet(HidNpadIdType_No1);
-    hidGetSixAxisSensorStates(
-        handle, packetData.states,
-        packetData.style & HidNpadStyleTag_NpadJoyDual ? 2 : 1);
-    if (packetData.style & HidNpadStyleTag_NpadJoyDual)
+
+    if (packetData.style & HidNpadStyleTag_NpadJoyDual) {
+      hidGetSixAxisSensorStates(handleJoyDual[0], &packetData.states[0], 1);
+      hidGetSixAxisSensorStates(handleJoyDual[1], &packetData.states[1], 1);
       hidGetNpadControllerColorSplit(HidNpadIdType_No1, &packetData.colors[0],
                                      &packetData.colors[1]);
-    else
+    } else {
+
+      hidGetSixAxisSensorStates(handleFullKey, packetData.states, 1);
       hidGetNpadControllerColorSingle(HidNpadIdType_No1, &packetData.colors[0]);
+    }
 
     u64 k = packetData.keys;
     if (k & HidNpadButton_L && k & HidNpadButton_ZL && k & HidNpadButton_R &&
