@@ -45,3 +45,27 @@ enum HidNpadButton
     AnySL = LeftSL | RightSL, ///< Bitmask containing SL buttons on both Joy-Cons (Left/Right)
     AnySR = LeftSR | RightSR ///< Bitmask containing SR buttons on both Joy-Cons (Left/Right)
 };
+
+enum HidNpadStyleTag
+{
+    NpadFullKey = (1 << (0)),       ///< Pro Controller
+    NpadHandheld = (1 << (1)),       ///< Joy-Con controller in handheld mode
+    NpadJoyDual = (1 << (2)),       ///< Joy-Con controller in dual mode
+    NpadJoyLeft = (1 << (3)),       ///< Joy-Con left controller in single mode
+    NpadJoyRight = (1 << (4)),       ///< Joy-Con right controller in single mode
+    NpadGc = (1 << (5)),       ///< GameCube controller
+    NpadPalma = (1 << (6)),       ///< Poké Ball Plus controller
+    NpadLark = (1 << (7)),       ///< NES/Famicom controller
+    NpadHandheldLark = (1 << (8)),       ///< NES/Famicom controller in handheld mode
+    NpadLucia = (1 << (9)),       ///< SNES controller
+    NpadLagon = (1 << (10)),      ///< N64 controller
+    NpadLager = (1 << (11)),      ///< Sega Genesis controller
+    NpadSystemExt = (1 << (29)),      ///< Generic external controller
+    NpadSystem = (1 << (30)),      ///< Generic controller
+};
+
+enum HidNpadStyleSet
+{
+    NpadFullCtrl = HidNpadStyleTag.NpadFullKey | HidNpadStyleTag.NpadHandheld | HidNpadStyleTag.NpadJoyDual,  ///< Style set comprising Npad styles containing the full set of controls {FullKey, Handheld, JoyDual}
+    NpadStandard = NpadFullCtrl | HidNpadStyleTag.NpadJoyLeft | HidNpadStyleTag.NpadJoyRight, ///< Style set comprising all standard Npad styles {FullKey, Handheld, JoyDual, JoyLeft, JoyRight}
+};

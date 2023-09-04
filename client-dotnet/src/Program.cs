@@ -11,10 +11,11 @@ class Program
     private static Config config = new Config("Res/config.ini");
     private static Font buttonFont;
     private static Camera3D camera;
-    private static Model controllerModel;
+    private static Model proControllerModel;
 
     public static UInt64 Keys;
     public static Vector2 LeftStick, RightStick;
+    public static Color buttonColor, controllerColorLeft, controllerColorRight;
 
     private static void DrawButton(Vector2 pos, float width, float height, HidNpadButton button, string label, float roundness, float fontOffsetX, float fontOffsetY, float fontSize, int materialIndex)
     {
@@ -22,12 +23,12 @@ class Program
         Raylib.DrawRectangleRounded(rec, roundness, 8, (Keys & Convert.ToUInt64(button)) != 0 ? config.ActiveColor : config.InactiveColor);
         pos.X += fontOffsetX;
         pos.Y += fontOffsetY;
-        Raylib.DrawTextEx(buttonFont, label, pos, fontSize, 4, config.FontColor);
+        Raylib.DrawTextEx(buttonFont, label, pos, fontSize, 4, config.UseSystemButtonColor ? GetTextColor(buttonColor) : config.FontColor);
 
         unsafe
         {
             if (materialIndex != -1)
-                controllerModel.materials[materialIndex].maps[0].color = (Keys & Convert.ToUInt64(button)) != 0 ? config.ActiveColor : config.InactiveColor;
+                proControllerModel.materials[materialIndex].maps[0].color = (Keys & Convert.ToUInt64(button)) != 0 ? config.ActiveColor : config.InactiveColor;
         }
     }
 
@@ -40,8 +41,46 @@ class Program
         unsafe
         {
             if (materialIndex != -1)
-                controllerModel.materials[materialIndex].maps[0].color = (Keys & Convert.ToUInt64(button)) != 0 ? config.ActiveColor : config.StickColor;
+                proControllerModel.materials[materialIndex].maps[0].color = (Keys & Convert.ToUInt64(button)) != 0 ? config.ActiveColor : config.StickColor;
         }
+    }
+
+    private static float[,] GetDirectionMatrix(byte[] data, int index)
+    {
+        int start = 24 + 96 * index + 52;
+        float[,] directionMatrix = {
+                {BitConverter.ToSingle(data, start), BitConverter.ToSingle(data, start+4), BitConverter.ToSingle(data, start+8)},
+                {BitConverter.ToSingle(data, start+12), BitConverter.ToSingle(data, start+16), BitConverter.ToSingle(data, start+20)},
+                {BitConverter.ToSingle(data, start+24), BitConverter.ToSingle(data, start+28), BitConverter.ToSingle(data, start+32)}
+            };
+        return directionMatrix;
+    }
+
+    private static Quaternion GetControllerQuat(byte[] data, int index)
+    {
+        float[,] directionMatrix = GetDirectionMatrix(data, index);
+        Quaternion quat = MathUtil.ToQuaternion(directionMatrix);
+        quat.X *= -1;
+        quat.Y *= -1;
+        quat.Z *= -1;
+        return quat;
+    }
+
+    private static Color GetTextColor(Color backgroundColor)
+    {
+        float luminosity = (backgroundColor.r * 0.299f + backgroundColor.g * 0.587f + backgroundColor.b * 0.114f) / 255f;
+        return luminosity > 0.5f ? Color.BLACK : Color.WHITE;
+    }
+
+    public static Color GetStickColor(Color buttonColor)
+    {
+        float luminosity = (buttonColor.r * 0.299f + buttonColor.g * 0.587f + buttonColor.b * 0.114f) / 255f;
+        int adjustFactor = luminosity > 0.5f ? -65 : 65;
+
+        buttonColor.r = (byte)Math.Clamp(buttonColor.r + adjustFactor, 0, 255);
+        buttonColor.g = (byte)Math.Clamp(buttonColor.g + adjustFactor, 0, 255);
+        buttonColor.b = (byte)Math.Clamp(buttonColor.b + adjustFactor, 0, 255);
+        return buttonColor;
     }
 
     public static void Main()
@@ -54,7 +93,7 @@ class Program
         camera.up = new Vector3(0, 1, 0);
         camera.fovy = 45;
         camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
-        controllerModel = Raylib.LoadModel("Res/Controller.glb");
+        proControllerModel = Raylib.LoadModel("Res/Controller.glb");
 
         UdpClient client = new UdpClient(config.Host, 44302);
         IPEndPoint remote = null;
@@ -71,8 +110,8 @@ class Program
 
         unsafe
         {
-            controllerModel.materials[2].maps[0].color = config.ControllerColor;
-            controllerModel.materials[7].maps[0].color = config.InactiveColor;
+            proControllerModel.materials[2].maps[0].color = config.ControllerColor;
+            proControllerModel.materials[7].maps[0].color = config.InactiveColor;
         }
 
         while (true)
@@ -81,41 +120,73 @@ class Program
             Keys = BitConverter.ToUInt64(data, 0);
             LeftStick = new Vector2((float)BitConverter.ToInt32(data, 8), (float)BitConverter.ToInt32(data, 12));
             RightStick = new Vector2((float)BitConverter.ToInt32(data, 16), (float)BitConverter.ToInt32(data, 20));
+            int styleSet = BitConverter.ToInt32(data, 232);
+            int colorButton = BitConverter.ToInt32(data, 220);
+            int leftColor = BitConverter.ToInt32(data, 216);
+            int rightColor = BitConverter.ToInt32(data, 224);
 
-            float[,] directionMatrix = {
-                {BitConverter.ToSingle(data, 76), BitConverter.ToSingle(data, 80), BitConverter.ToSingle(data, 84)},
-                {BitConverter.ToSingle(data, 88), BitConverter.ToSingle(data, 92), BitConverter.ToSingle(data, 96)},
-                {BitConverter.ToSingle(data, 100), BitConverter.ToSingle(data, 104), BitConverter.ToSingle(data, 108)}
-            };
-            Quaternion quat = MathUtil.ToQuaternion(directionMatrix);
-            quat.X *= -1;
-            quat.Y *= -1;
-            quat.Z *= -1;
-            controllerModel.transform = Raymath.QuaternionToMatrix(Raymath.QuaternionMultiply(Raymath.QuaternionInvert(baseRotation), quat));
+            controllerColorLeft = new Color((byte)(leftColor & 0xff),
+                              (byte)((leftColor & 0xff00) >> 8),
+                              (byte)((leftColor & 0xff0000) >> 0x10),
+                               (byte)((leftColor & -16777216) >> 0x18)
+                              );
+            controllerColorRight = new Color((byte)(rightColor & 0xff),
+                              (byte)((rightColor & 0xff00) >> 8),
+                              (byte)((rightColor & 0xff0000) >> 0x10),
+                               (byte)((rightColor & -16777216) >> 0x18)
+                              );
 
-            if (calibrationCooldown > 0)
+            if (config.UseSystemButtonColor)
             {
-                calibrationCooldown--;
 
-                baseRotation = Raymath.QuaternionSlerp(baseRotation, slerpTo, ((float)config.PacketsPerSecond / 2 - (float)calibrationCooldown) / (float)config.PacketsPerSecond / 2);
+                buttonColor = new Color((byte)(colorButton & 0xff),
+                                  (byte)((colorButton & 0xff00) >> 8),
+                                  (byte)((colorButton & 0xff0000) >> 0x10),
+                                   (byte)((colorButton & -16777216) >> 0x18)
+                                  );
+                config.InactiveColor = buttonColor;
+                config.StickColor = GetStickColor(buttonColor);
             }
-            if ((Keys & Convert.ToUInt64(HidNpadButton.StickL)) != 0 && calibrationCooldown <= 0)
-            {
-                calibrationCooldown = config.PacketsPerSecond / 2;
-                slerpTo = MathUtil.ToQuaternion(directionMatrix);
-                slerpTo.X *= -1;
-                slerpTo.Y *= -1;
-                slerpTo.Z *= -1;
-            }
+
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(config.BackgroundColor);
 
-            Raylib.BeginMode3D(camera);
+            if ((styleSet & Convert.ToInt32(HidNpadStyleTag.NpadJoyDual)) != 0)
+            {
 
-            Raylib.DrawModel(controllerModel, new Vector3(0, 0, 0), 2, Color.WHITE);
+            }
+            else if ((styleSet & Convert.ToInt32(HidNpadStyleTag.NpadFullKey)) != 0 && config.EnableGyroModels)
+            {
+                unsafe
+                {
+                    if (config.UseSystemControllerColor)
+                        proControllerModel.materials[2].maps[0].color = controllerColorLeft;
+                    proControllerModel.materials[7].maps[0].color = config.InactiveColor;
+                }
 
-            Raylib.EndMode3D();
+                Quaternion quat = GetControllerQuat(data, 0);
+                proControllerModel.transform = Raymath.QuaternionToMatrix(Raymath.QuaternionMultiply(Raymath.QuaternionInvert(baseRotation), quat));
+
+                if (calibrationCooldown > 0)
+                {
+                    calibrationCooldown--;
+
+                    baseRotation = Raymath.QuaternionSlerp(baseRotation, slerpTo, ((float)config.PacketsPerSecond / 2 - (float)calibrationCooldown) / (float)config.PacketsPerSecond / 2);
+                }
+                if ((Keys & Convert.ToUInt64(HidNpadButton.StickL)) != 0 && calibrationCooldown <= 0)
+                {
+                    calibrationCooldown = config.PacketsPerSecond / 2;
+                    slerpTo = GetControllerQuat(data, 0);
+                }
+
+
+                Raylib.BeginMode3D(camera);
+
+                Raylib.DrawModel(proControllerModel, new Vector3(0, 0, 0), 2, Color.WHITE);
+
+                Raylib.EndMode3D();
+            }
 
             DrawStick(new Vector2(100, 180), LeftStick, HidNpadButton.StickL, 8);
             DrawStick(new Vector2(380, 270), RightStick, HidNpadButton.StickR, 9);

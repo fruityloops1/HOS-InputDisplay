@@ -108,7 +108,9 @@ restartSocket :
     u64 keys;
     HidAnalogStickState lPos;
     HidAnalogStickState rPos;
-    HidSixAxisSensorState state;
+    HidSixAxisSensorState states[2];
+    HidNpadControllerColor colors[2];
+    HidNpadStyleTag style;
   } packetData;
 
   typeof(packetData) lastData;
@@ -133,7 +135,15 @@ restartSocket :
     packetData.keys = padGetButtons(&pad);
     packetData.lPos = padGetStickPos(&pad, 0);
     packetData.rPos = padGetStickPos(&pad, 1);
-    hidGetSixAxisSensorStates(handle, &packetData.state, 1);
+    packetData.style = hidGetNpadStyleSet(HidNpadIdType_No1);
+    hidGetSixAxisSensorStates(
+        handle, packetData.states,
+        packetData.style & HidNpadStyleTag_NpadJoyDual ? 2 : 1);
+    if (packetData.style & HidNpadStyleTag_NpadJoyDual)
+      hidGetNpadControllerColorSplit(HidNpadIdType_No1, &packetData.colors[0],
+                                     &packetData.colors[1]);
+    else
+      hidGetNpadControllerColorSingle(HidNpadIdType_No1, &packetData.colors[0]);
 
     u64 k = packetData.keys;
     if (k & HidNpadButton_L && k & HidNpadButton_ZL && k & HidNpadButton_R &&

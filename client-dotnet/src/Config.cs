@@ -25,6 +25,9 @@ class Config
         PacketsPerSecond = Convert.ToInt32(data["config"]["packetsPerSecond"]);
         Host = data["config"]["host"];
         FontPath = data["config"]["fontPath"];
+        UseSystemButtonColor = data["config"]["useSystemButtonColor"] == "true";
+        UseSystemControllerColor = data["config"]["useSystemControllerColor"] == "true";
+        EnableGyroModels = data["config"]["enableGyroModels"] == "true";
 
         ActiveColor = HexToColor(data["colors"]["active"]);
         InactiveColor = HexToColor(data["colors"]["inactive"]);
@@ -44,4 +47,7 @@ class Config
     public Color FontColor;
     public Color BackgroundColor;
     public Color ControllerColor;
+    public bool UseSystemButtonColor;
+    public bool UseSystemControllerColor;
+    public bool EnableGyroModels;
 }
