@@ -136,6 +136,7 @@ restartSocket :
     svcSleepThread(1000000000 / settings.packetsPerSecond);
 
     lastData = packetData;
+    packetData.style = hidGetNpadStyleSet(HidNpadIdType_No1);
 
     HidNpadCommonState state;
     if (packetData.style & HidNpadStyleTag_NpadFullKey)
@@ -143,7 +144,7 @@ restartSocket :
     else if (packetData.style & HidNpadStyleTag_NpadJoyDual)
       hidGetNpadStatesJoyDual(HidNpadIdType_No1, &state, 1);
     else if (packetData.style & HidNpadStyleTag_NpadHandheld)
-      hidGetNpadStatesHandheld(HidNpadIdType_No1, &state, 1);
+      hidGetNpadStatesHandheld(HidNpadIdType_Handheld, &state, 1);
     else if (packetData.style & HidNpadStyleTag_NpadJoyLeft)
       hidGetNpadStatesJoyLeft(HidNpadIdType_No1, &state, 1);
     else if (packetData.style & HidNpadStyleTag_NpadJoyRight)
@@ -159,7 +160,6 @@ restartSocket :
       hidGetNpadControllerColorSplit(HidNpadIdType_No1, &packetData.colors[0],
                                      &packetData.colors[1]);
     } else {
-
       hidGetSixAxisSensorStates(handleFullKey, packetData.states, 1);
       hidGetNpadControllerColorSingle(HidNpadIdType_No1, &packetData.colors[0]);
     }
