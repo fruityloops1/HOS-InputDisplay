@@ -136,11 +136,22 @@ restartSocket :
     svcSleepThread(1000000000 / settings.packetsPerSecond);
 
     lastData = packetData;
-    padUpdate(&pad);
-    packetData.keys = padGetButtons(&pad);
-    packetData.lPos = padGetStickPos(&pad, 0);
-    packetData.rPos = padGetStickPos(&pad, 1);
-    packetData.style = hidGetNpadStyleSet(HidNpadIdType_No1);
+
+    HidNpadCommonState state;
+    if (packetData.style & HidNpadStyleTag_NpadFullKey)
+      hidGetNpadStatesFullKey(HidNpadIdType_No1, &state, 1);
+    else if (packetData.style & HidNpadStyleTag_NpadJoyDual)
+      hidGetNpadStatesJoyDual(HidNpadIdType_No1, &state, 1);
+    else if (packetData.style & HidNpadStyleTag_NpadHandheld)
+      hidGetNpadStatesHandheld(HidNpadIdType_No1, &state, 1);
+    else if (packetData.style & HidNpadStyleTag_NpadJoyLeft)
+      hidGetNpadStatesJoyLeft(HidNpadIdType_No1, &state, 1);
+    else if (packetData.style & HidNpadStyleTag_NpadJoyRight)
+      hidGetNpadStatesJoyRight(HidNpadIdType_No1, &state, 1);
+
+    packetData.keys = state.buttons;
+    packetData.lPos = state.analog_stick_l;
+    packetData.rPos = state.analog_stick_r;
 
     if (packetData.style & HidNpadStyleTag_NpadJoyDual) {
       hidGetSixAxisSensorStates(handleJoyDual[0], &packetData.states[0], 1);
