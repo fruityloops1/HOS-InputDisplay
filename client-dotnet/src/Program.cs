@@ -111,7 +111,7 @@ class Program
 
         byte[] sendData = new byte[] { 0, 0, 0, 0 };
         client.Send(sendData, sendData.Length);
-        sendData = new byte[] { 0, 0, 0, 0, (byte)config.PacketsPerSecond, 0, 0, 0 };
+        sendData = new byte[] { 1, 0, 0, 0, (byte)config.PacketsPerSecond, 0, 0, 0 };
         client.Send(sendData, sendData.Length);
 
         Quaternion slerpTo = new Quaternion(0, 0, 0, 1);
