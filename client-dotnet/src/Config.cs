@@ -22,7 +22,15 @@ class Config
         var parser = new FileIniDataParser();
         IniData data = parser.ReadFile(path);
 
-        PacketsPerSecond = Convert.ToInt32(data["config"]["packetsPerSecond"]);
+        try
+        {
+            PacketsPerSecond = Convert.ToInt32(data["config"]["packetsPerSecond"]);
+            PacketOnVsyncEvent = false;
+        }
+        catch (FormatException)
+        {
+            PacketOnVsyncEvent = data["config"]["packetsPerSecond"] == "vsync";
+        }
         Host = data["config"]["host"];
         FontPath = data["config"]["fontPath"];
         UseSystemButtonColor = data["config"]["useSystemButtonColor"] == "true";
@@ -38,6 +46,7 @@ class Config
     }
 
     public int PacketsPerSecond;
+    public bool PacketOnVsyncEvent;
     public string Host;
     public string FontPath;
 
