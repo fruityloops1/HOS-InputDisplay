@@ -1,5 +1,7 @@
 # HOS-InputDisplay
 
+# This project has been abandoned, if you wish to still use it, please use the 1.3.2 version from the Releases tab, as the latest one is broken.
+
 Nintendo switch input display meant as a replacement for OJDS-NX, because OJDS-NX causes load times to increase in some games. This can still be the case with this input display, but it is minimal.
 
 ## Build (Sysmodule)
